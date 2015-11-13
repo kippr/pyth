@@ -58,9 +58,9 @@ _CODEPAGES = {
 
 # All the ones named by number in my 2.6 encodings dir, and those listed above
 _CODEPAGES_BY_NUMBER = dict(
-    (x, "cp%s" % x) for x in (37, 424, 437, 500, 737, 775, 850, 852, 855, 856, 
+    (x, "cp%s" % x) for x in (37, 424, 437, 500, 737, 775, 850, 852, 855, 856,
                               857, 860, 861, 862, 863, 864, 865, 866, 869, 874,
-                              875, 932, 936, 949, 950, 1006, 1026, 1140, 1250, 
+                              875, 932, 936, 949, 950, 1006, 1026, 1140, 1250,
                               1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1361))
 
 # Miscellaneous, incomplete
@@ -224,7 +224,7 @@ class DocBuilder(object):
     def flushRun(self):
         if self.block is None:
             self.block = document.Paragraph()
-        
+
         if self.isImage:
             self.block.content.append(
                 document.Image(self.propStack[-1].copy(),
@@ -321,7 +321,7 @@ class DocBuilder(object):
             self.listStack[-1].append(l)
 
         self.block = None
-    
+
     def handle_Pict(self, pict):
         self.flushRun()
         self.isImage = True
@@ -354,7 +354,7 @@ class DocBuilder(object):
                 del self.propStack[-1][marker.name]
             else:
                 self.propStack[-1][marker.name] = True
-    
+
 
 
 class Group(object):
@@ -398,11 +398,11 @@ class Group(object):
         if control == '*':
             self.destination = True
             return
-        
-        if self.image and control in ['emfblip', 'pngblip', 'jpegblip', 'macpict', 'pmmetafile', 'wmetafile', 
-                                      'dibitmap', 'wbitmap', 'wbmbitspixel', 'wbmplanes', 'wbmwidthbytes', 
-                                      'picw', 'pich', 'picwgoal', 'pichgoal', 'picscalex', 'picscaley', 
-                                      'picscaled', 'piccropt', 'piccropb', 'piccropr', 'piccropl', 'picbmp', 
+
+        if self.image and control in ['emfblip', 'pngblip', 'jpegblip', 'macpict', 'pmmetafile', 'wmetafile',
+                                      'dibitmap', 'wbitmap', 'wbmbitspixel', 'wbmplanes', 'wbmwidthbytes',
+                                      'picw', 'pich', 'picwgoal', 'pichgoal', 'picscalex', 'picscaley',
+                                      'picscaled', 'piccropt', 'piccropb', 'piccropr', 'piccropl', 'picbmp',
                                       'picbpp', 'bin', 'blipupi', 'blipuid', 'bliptag', 'wbitmap']:
             self.content.append(ImageMarker(control, digits))
             return
@@ -650,7 +650,7 @@ class Group(object):
 
     def handle_trowd(self):
         self.content.append(u'\n')
-        
+
     #Handle the image tag
     def handle_pict(self):
         p = Pict()
@@ -658,7 +658,7 @@ class Group(object):
         self.image = p
         #Remove the destination control group of the parent, so that the image is preserved
         self.parent.destination = False
-    
+
     def handle_field(self):
         def finalize():
             if len(self.content) != 2:
@@ -745,7 +745,7 @@ class Pict(ImageMarker):
 
     def __repr__(self):
         return "!Image!"
-            
+
 class Para(ReadableMarker):
     listLevel = None
 

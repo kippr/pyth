@@ -80,6 +80,22 @@ class TestReadXHTML(unittest.TestCase):
         text = doc.content[0].content[0]
         assert text['url'] == "http://google.com"
 
+    def test_inline_png(self):
+        pixels = 50
+        twips = pixels * 15
+        height = width = str(twips)  # in retrospect choosing a square image wasn't a great idea :)
+        with open('tests/html/sample-with-image.html', 'rb') as xhtml:
+            doc = XHTMLReader.read(xhtml)
+            image = next(node.content[0] for node in doc.content if isinstance(node.content[0], pyth.document.Image))
+            self.assertEquals(image.content[0][1:4], u'PNG')
+            self.assertEquals(image['pngblip'], True)
+            self.assertEquals(image['pich'], height)
+            self.assertEquals(image['pichgoal'], height)
+            self.assertEquals(image['picw'], width)
+            self.assertEquals(image['picwgoal'], width)
+            self.assertEquals(image['picscaley'], '100')
+            self.assertEquals(image['picscalex'], '100')
+
 
 if __name__ == '__main__':
     unittest.main()

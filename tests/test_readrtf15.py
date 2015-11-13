@@ -30,6 +30,17 @@ class TestRtfFile(unittest.TestCase):
     pass
 
 
+class TestRtfWithImage(unittest.TestCase):
+
+    def test_inline_png(self):
+        sample_with_image = os.path.join(os.path.abspath(os.path.dirname(__file__)), "rtfs", "sample-with-image.rtf")
+        with open(sample_with_image, 'rb') as rtf:
+                doc = Rtf15Reader.read(rtf)
+                image = next(node.content[0] for node in doc.content if isinstance(node.content[0], pyth.document.Image))
+                expected = {'pngblip': True, 'picw': '20714', 'picwgoal': '750', 'pich': '12143',
+                            'pichgoal': '750', 'picscaley': '100', 'picscalex': '100'}
+                self.assertEquals(expected, image.properties)
+
 
 if __name__ == '__main__':
     unittest.main()

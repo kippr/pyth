@@ -2,11 +2,16 @@
 Read documents from xhtml
 """
 
+import base64
+
 import BeautifulSoup
 
 from pyth import document
 from pyth.format import PythReader
 from pyth.plugins.xhtml.css import CSS
+
+
+BASE64_PNG_IMG_SRC = 'data:image/png;base64,'
 
 
 class XHTMLReader(PythReader):
@@ -110,6 +115,21 @@ class XHTMLReader(PythReader):
         else:
             return self.link_callback(a_node.get('href'))
 
+    def dimensions(self, node):
+        """
+        return (int(width), int(height)) in pixels if a node has these declared in px in a style attribute, else None for either
+        or both attributes
+        """
+        try:
+            style = node['style']
+        except KeyError:
+            return None, None
+        else:
+            declarations = self.css.parse_declarations(style)
+            width = _parse_px(declarations.get('width', None))
+            height = _parse_px(declarations.get('height', None))
+            return width, height
+
     def process_text(self, node):
         """
         Return a pyth Text object from a BeautifulSoup node or None if
@@ -161,5 +181,34 @@ class XHTMLReader(PythReader):
             new_obj = document.ListEntry()
             obj.append(new_obj)
             obj = new_obj
+        elif node.name == 'img':
+            if node.get('src', '').startswith(BASE64_PNG_IMG_SRC):
+                base64_data = node['src'][len(BASE64_PNG_IMG_SRC):]
+                new_obj = document.Image()
+                new_obj.append(base64.b64decode(base64_data))
+                new_obj['pngblip'] = True
+                width, height = self.dimensions(node)
+                if height:
+                    height = unicode(_px_to_twips(height))
+                    new_obj['pich'] = height
+                    new_obj['pichgoal'] = height
+                if width:
+                    width = unicode(_px_to_twips(width))
+                    new_obj['picw'] = width
+                    new_obj['picwgoal'] = width
+                new_obj['picscalex'] = '100'
+                new_obj['picscaley'] = '100'
+
+                obj.content.append(new_obj)
+                return  # img is not allowed to have children as per DTD
         for child in node:
             self.process_into(child, obj)
+
+
+def _parse_px(node):
+    if node and node.lower().endswith('px'):
+        return int(node[:-2])
+
+
+def _px_to_twips(px):
+    return px * 15

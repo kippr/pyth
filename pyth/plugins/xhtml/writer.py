@@ -136,7 +136,15 @@ class XHTMLWriter(PythWriter):
             image_data = bytearray.fromhex(image.content[0])
             base64_image = base64.b64encode(image_data)
             tag.attrs['src'] = "data:image/png;base64,{}".format(base64_image)
-            tag.attrs['alt'] = 'Inline image'
+            height = image['pichgoal']
+            width = image['picwgoal']
+            if width or height:
+                styles = []
+                styles.append(_twips_to_style_px('width', width))
+                styles.append(_twips_to_style_px('height', height))
+                style = ';'.join(s for s in styles if s)
+                if style:
+                    tag.attrs['style'] = style
             return tag
         else:
             return Tag(None)
@@ -195,3 +203,12 @@ def quoteAttr(text):
     return quoteText(text).replace(
         u'"', u"&quot;").replace(
         u"'", u"&apos;")
+
+
+def _twips_to_style_px(tag, twips):
+    try:
+        twips = int(twips)
+    except ValueError:
+        pass
+    px = int(round(twips / 15.0))
+    return "{}:{}px".format(tag, px)
