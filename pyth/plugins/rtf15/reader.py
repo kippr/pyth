@@ -157,7 +157,7 @@ class Rtf15Reader(PythReader):
             if not next:
                 break
 
-            if first and next in '\\{}':
+            if first and next in '\\{}~_-':
                 chars.extend("control_symbol")
                 digits.append(next)
                 break
