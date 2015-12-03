@@ -85,6 +85,9 @@ class XHTMLReader(PythReader):
         return (node.findParent(['em', 'i']) is not None
                 or self.css.is_italic(node))
 
+    def is_underline(self, node):
+        return node.findParent(['u']) is not None
+
     def is_sub(self, node):
         """
         Return true if the BeautifulSoup node needs to be rendered as
@@ -145,6 +148,8 @@ class XHTMLReader(PythReader):
             properties['bold'] = True
         if self.is_italic(node):
             properties['italic'] = True
+        if self.is_underline(node):
+            properties['underline'] = True
         if self.url(node):
             properties['url'] = self.url(node)
         if self.is_sub(node):
