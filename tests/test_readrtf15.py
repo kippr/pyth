@@ -49,6 +49,25 @@ class TestRtfWithNonbreakingSpaces(unittest.TestCase):
             doc = Rtf15Reader.read(rtf)
             traverse_text(doc, lambda text: self.assertNotIn('~', text))
 
+
+class TestNestedLists(unittest.TestCase):
+
+    def test_when_last_item_sublist_item(self):
+        """ With structures like this, both lists were getting dropped
+        Start
+         * 1
+           * 1.1
+        """
+        list_bug = os.path.join(os.path.abspath(os.path.dirname(__file__)), "rtfs", "list-bug.rtf")
+        with open(list_bug, 'rb') as rtf:
+            doc = Rtf15Reader.read(rtf)
+            text = []
+            traverse_text(doc, lambda x: text.append(x))
+            self.assertIn('Start', text)
+            self.assertIn('1', text)
+            self.assertIn('1.1', text)
+
+
 def traverse_text(element, function):
     if element.__class__ == pyth.document.Text:
         map(function, element.content)

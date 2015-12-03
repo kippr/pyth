@@ -317,8 +317,12 @@ class DocBuilder(object):
             self.listStack.append(l)
 
         elif self.listLevel < prevListLevel:
-            l = self.listStack.pop()
-            self.listStack[-1].append(l)
+            times = prevListLevel + 1
+            if self.listLevel is not None:
+                times = times - (self.listLevel + 1)
+            for _ in xrange(times):
+                l = self.listStack.pop()
+                self.listStack[-1].append(l)
 
         self.block = None
 
@@ -603,7 +607,7 @@ class Group(object):
 
     def handle_ilvl(self, level):
         if self.currentParaTag is not None:
-            self.currentParaTag.listLevel = level
+            self.currentParaTag.listLevel = int(level)
         else:
             # Well, now we're in trouble. But I'm pretty sure this
             # isn't supposed to happen anyway.
