@@ -68,6 +68,16 @@ class TestNestedLists(unittest.TestCase):
             self.assertIn('1.1', text)
 
 
+class TestTextProperties(unittest.TestCase):
+
+    def test_reads_underline(self):
+        text = os.path.join(os.path.abspath(os.path.dirname(__file__)), "rtfs", "text-attributes.rtf")
+        with open(text, 'rb') as rtf:
+            doc = Rtf15Reader.read(rtf)
+            underlined = doc.content[0].content[0]
+            self.assertTrue(underlined['underline'])
+
+
 def traverse_text(element, function):
     if element.__class__ == pyth.document.Text:
         map(function, element.content)

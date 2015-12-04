@@ -53,6 +53,24 @@ class TestReadXHTML(unittest.TestCase):
         text = doc.content[0].content[0]
         assert text['italic']
 
+    def test_underline(self):
+        """
+        Try to read a paragraph containing underline
+        """
+        xhtml = "<div><p><u>sub</u></p></div>"
+        doc = XHTMLReader.read(xhtml)
+        text = doc.content[0].content[0]
+        assert text['underline']
+
+    def test_underline_styling(self):
+        """
+        Try to read a paragraph containing underline via CSS
+        """
+        xhtml = '<div><p style="text-decoration: underline;">underline</p></div>'
+        doc = XHTMLReader.read(xhtml)
+        text = doc.content[0].content[0]
+        assert text['underline']
+
     def test_sub(self):
         """
         Try to read a paragraph containing subscript
