@@ -15,6 +15,8 @@ _tagNames = {
     'bold': 'strong',
     'italic': 'em',
     'underline': 'u', # ?
+    'super': 'sup',
+    'sub': 'sub',
 }
 
 
@@ -112,19 +114,11 @@ class XHTMLWriter(PythWriter):
 
         current = tag
 
-        for prop in ('bold', 'italic', 'underline'):
+        for prop in ('bold', 'italic', 'underline', 'sub', 'super'):
             if prop in text.properties:
                 newTag = Tag(_tagNames[prop])
                 current.content.append(newTag)
                 current = newTag
-
-        for prop in ('sub', 'super'):
-            if prop in text.properties:
-                if current.tag is None:
-                    newTag = Tag("span")
-                    current.content.append(newTag)
-                    current = newTag
-                current.attrs['style'] = "vertical-align: %s; font-size: smaller" % prop
 
         current.content.append(u"".join(text.content))
 
