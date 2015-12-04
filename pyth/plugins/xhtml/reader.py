@@ -177,7 +177,7 @@ class XHTMLReader(PythReader):
             new_obj = document.Paragraph()
             obj.append(new_obj)
             obj = new_obj
-        elif node.name == 'ul':
+        elif node.name in ('ul', 'ol'):
             # add a new list
             new_obj = document.List()
             obj.append(new_obj)
