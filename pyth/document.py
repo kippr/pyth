@@ -115,11 +115,12 @@ class ListEntry(_PythBase):
 
 class List(Paragraph):
     """
-    A list of paragraphs which will be rendered as a bullet list.
+    A list of paragraphs which will be rendered as a bullet or ordered list.
 
     A List is a Paragraph, so Lists can be nested.
     """
 
+    # kp: todo: add a list type property: bullet or numbered
     validProperties = ()
     contentType = ListEntry
 

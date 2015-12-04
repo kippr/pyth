@@ -132,6 +132,7 @@ class Rtf15Writer(PythWriter):
         # levelnfc23 means bullets (rather than numbering)
         # leveljc0 means left justified
         # levelfollow0 means a tab after the bullet
+        # kp: todo: would need to add listid2 here with definitions for numbered list
         output = [r'{\*\listtable{\list\listid1\listtemplateid1']
 
         for i in range(9):
@@ -148,6 +149,7 @@ class Rtf15Writer(PythWriter):
     def _getListOverrides(self):
         # I have no idea what the point is of this,
         # but we need it.
+        # kp: todo: would need to add 2nd entry here mapping ls1 to listid2 above
         return r'{\listoverridetable{\listoverride\listid1\listoverridecount0\ls0}}'
 
 
@@ -217,6 +219,7 @@ class Rtf15Writer(PythWriter):
             for paragraph in entry.content:
                 # It doesn't seem like RTF supports multiple paragraphs
                 # in the same list item, so just let them be an item each.
+                # kp: todo: would need to change ls0 below to ls0 or ls1, this dependent on whether ul or ol
                 self.target.write(r'\ilvl%d\ls0\li%d\s1' % (
                     self.listLevel, 720*(self.listLevel+1)))
                 handler = self._paragraphDispatch[paragraph.__class__]

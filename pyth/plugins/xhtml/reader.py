@@ -178,6 +178,7 @@ class XHTMLReader(PythReader):
             obj.append(new_obj)
             obj = new_obj
         elif node.name in ('ul', 'ol'):
+            # kp: todo: would set list type based on above: ordered or bullet
             # add a new list
             new_obj = document.List()
             obj.append(new_obj)
