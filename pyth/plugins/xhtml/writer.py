@@ -93,12 +93,23 @@ class XHTMLWriter(PythWriter):
         if self.cssClasses:
             ul.attrs['class'] = 'pyth_list_%s' % self.listLevel
 
+        last_li = None
         for entry in lst.content:
             li = Tag("li")
             for element in entry.content:
+                # in practice list elements always have only one content child?
                 handler = self.paragraphDispatch[element.__class__]
-                li.content.extend(handler(element))
-            ul.content.append(li)
+                if handler == self._list:
+                    # this is a sublist, so we shouldn't create an empty li, but rather append ul to prior li.
+                    # Lists can't be immediately sublisted (e.g. there must be at least something at outer level)
+                    # but if that is not the case the last_li will be None and next line will bomb out, which is a
+                    # useful implicit assertion
+                    last_li.content.extend(handler(element))
+                else:
+                    li.content.extend(handler(element))
+                    last_li = li
+            if li.content:  # li might be empty..
+                ul.content.append(li)
 
         self.listLevel -= 1
 
