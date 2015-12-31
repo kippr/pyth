@@ -320,7 +320,8 @@ class DocBuilder(object):
             times = prevListLevel + 1
             if self.listLevel is not None:
                 times = times - (self.listLevel + 1)
-            for _ in xrange(times):
+            depth = len(self.listStack) - 1
+            for _ in xrange(min(times, depth)):
                 l = self.listStack.pop()
                 self.listStack[-1].append(l)
 
@@ -606,12 +607,12 @@ class Group(object):
 
 
     def handle_ilvl(self, level):
-        if self.currentParaTag is not None:
-            self.currentParaTag.listLevel = int(level)
-        else:
-            # Well, now we're in trouble. But I'm pretty sure this
-            # isn't supposed to happen anyway.
-            pass
+        if self.currentParaTag is None:
+            # this can happen where documents open straight with lists rather than a containing Para..
+            p = Para()
+            self.content.append(p)
+            self.currentParaTag = p
+        self.currentParaTag.listLevel = int(level)
 
 
     def handle_up(self, amount):
