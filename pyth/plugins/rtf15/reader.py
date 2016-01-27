@@ -391,7 +391,7 @@ class Group(object):
 
 
     def flushChars(self):
-        chars = "".join(self.charBuffer).decode(self.charset, self.reader.errors)
+        chars = u"".join(c.decode(self.charset, self.reader.errors) for c in self.charBuffer)
         self.content.append(chars)
         self.charBuffer = []
 
