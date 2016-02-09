@@ -257,7 +257,10 @@ class Rtf15Writer(PythWriter):
                 if unichar == '\n':
                     self.target.write(r'\line ')
                     continue
-
+                # Escape control characters
+                if unichar in '\\{}':
+                    self.target.write(r'\%s' % unichar)
+                    continue
                 point = ord(unichar)
                 if point < 128:
                     self.target.write(str(unichar))
