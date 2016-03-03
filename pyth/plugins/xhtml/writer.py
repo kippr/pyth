@@ -7,6 +7,7 @@ Render documents as XHTML fragments
 from pyth import document
 from pyth.format import PythWriter
 import base64
+import re
 
 from cStringIO import StringIO
 
@@ -198,8 +199,8 @@ class Tag(object):
 
 
 def quoteText(text):
-    return text.replace(
-        u"&", u"&amp;").replace(
+    return re.sub(
+        u'&(?!(amp|lt|gt);)', u'&amp;', text, flags=re.IGNORECASE).replace(
         u"<", u"&lt;").replace(
         u">", u"&gt;")
 
